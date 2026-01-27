@@ -1,5 +1,6 @@
 const express = require('express');
 const db = require('../db');
+const sendSMS = require('../sms/ethio');
 
 const router = express.Router();
 
@@ -16,20 +17,21 @@ router.post('/', (req, res) => {
     `INSERT INTO orders (phone, size, price, payment_method, status)
      VALUES (?, ?, ?, ?, ?)`,
     [phone, size, price, payment_method, 'Pending'],
-    function () {
-      // 🔔 SMS will be triggered here later
-      console.log(`📩 SMS sent to ${phone}: Order confirmed - ${price} birr`);
+    function (err) {
+      if (err) {
+        return res.status(500).json({ error: 'Database error' });
+      }
+
+      // 📩 Send SMS after successful order
+      sendSMS(
+        phone,
+        `የዳቦ ትዕዛዝዎ ተቀብሏል። መጠን: ${size} | ዋጋ: ${price} ብር`
+      );
 
       res.json({
         success: true,
         orderId: this.lastID,
-        price
-        const sendSMS = require('../sms/ethio');
-
-sendSMS(
-  phone,
-  `የዳቦ ትዕዛዝዎ ተቀብሏል። መጠን: ${size} | ዋጋ: ${price} ብር`
-);
+        price: price
       });
     }
   );
