@@ -1,10 +1,9 @@
-CREATE TABLE IF NOT EXISTS payments (
+CREATE TABLE IF NOT EXISTS orders (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
-  order_id INTEGER NOT NULL,
-  provider TEXT,
-  transaction_ref TEXT,
-  amount INTEGER,
-  status TEXT,
-  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-  FOREIGN KEY(order_id) REFERENCES orders(id)
+  phone TEXT NOT NULL,
+  size TEXT CHECK(size IN ('small','big')) NOT NULL,
+  price INTEGER NOT NULL,
+  payment_method TEXT NOT NULL,
+  status TEXT DEFAULT 'PENDING',
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
