@@ -1,5 +1,14 @@
 const API = 'http://localhost:5000';
 
+// helper to get auth headers
+function authHeaders() {
+  const token = localStorage.getItem('token');
+  return {
+    'Content-Type': 'application/json',
+    'Authorization': token ? `Bearer ${token}` : ''
+  };
+}
+
 export async function createOrder(phone, size, payment_method) {
   const res = await fetch(`${API}/orders`, {
     method: 'POST',
@@ -10,19 +19,17 @@ export async function createOrder(phone, size, payment_method) {
 }
 
 export async function getOrders() {
-  const res = await fetch(`${API}/admin/orders`);
+  const res = await fetch(`${API}/admin/orders`, {
+    headers: authHeaders()
+  });
   return res.json();
 }
-const token = localStorage.getItem('token');
 
-headers: {
-  'Content-Type': 'application/json',
-  'Authorization': token
-}
 export async function updateOrder(id, status) {
-  await fetch(`${API}/admin/orders/${id}`, {
+  const res = await fetch(`${API}/admin/orders/${id}`, {
     method: 'PUT',
-    headers: { 'Content-Type': 'application/json' },
+    headers: authHeaders(),
     body: JSON.stringify({ status })
   });
+  return res.json();
 }
