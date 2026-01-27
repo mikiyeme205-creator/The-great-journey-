@@ -35,7 +35,7 @@ function displayOrders(data) {
 // Fetch orders from server
 async function fetchOrders() {
   try {
-    const res = await fetch('http://localhost:3000/orders', {
+    const res = await fetch('http:///orders', {
       headers: { 'Authorization': 'Bearer ' + localStorage.getItem('adminToken') }
     });
     const data = await res.json();
@@ -56,7 +56,7 @@ async function fetchOrders() {
 // Mark order as delivered
 async function markDelivered(id) {
   try {
-    await fetch(`http://localhost:3000/orders/${id}`, {
+    await fetch(`http:///orders/${id}`, {
       method: 'PUT',
       headers: { 'Authorization': 'Bearer ' + localStorage.getItem('adminToken') }
     });
