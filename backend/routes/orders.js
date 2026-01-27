@@ -24,6 +24,12 @@ router.post('/', (req, res) => {
         success: true,
         orderId: this.lastID,
         price
+        const sendSMS = require('../sms/ethio');
+
+sendSMS(
+  phone,
+  `የዳቦ ትዕዛዝዎ ተቀብሏል። መጠን: ${size} | ዋጋ: ${price} ብር`
+);
       });
     }
   );
