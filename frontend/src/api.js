@@ -13,7 +13,12 @@ export async function getOrders() {
   const res = await fetch(`${API}/admin/orders`);
   return res.json();
 }
+const token = localStorage.getItem('token');
 
+headers: {
+  'Content-Type': 'application/json',
+  'Authorization': token
+}
 export async function updateOrder(id, status) {
   await fetch(`${API}/admin/orders/${id}`, {
     method: 'PUT',
