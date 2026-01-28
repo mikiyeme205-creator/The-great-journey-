@@ -1,29 +1,25 @@
-const jwt = require('jsonwebtoken');
-require('dotenv').config();
+const express = require('express');
+const db = require('../db');
+const jwtAuth = require('../middleware/JwtAuth'); // Correct case
 
-// Middleware to protect admin routes
-function jwtAuth(req, res, next) {
-  const authHeader = req.headers.authorization;
+const router = express.Router();
 
-  if (!authHeader) {
-    return res.status(401).json({ error: 'Authorization header missing' });
-  }
+// GET all orders
+router.get('/orders', jwtAuth, (req, res) => {
+  db.all('SELECT * FROM orders', [], (err, rows) => {
+    if (err) return res.status(500).json({ error: err.message });
+    res.json(rows);
+  });
+});
 
-  // Expected format: Bearer <token>
-  const parts = authHeader.split(' ');
-  if (parts.length !== 2 || parts[0] !== 'Bearer') {
-    return res.status(401).json({ error: 'Invalid authorization format' });
-  }
+// UPDATE order status
+router.put('/orders/:id', jwtAuth, (req, res) => {
+  const { id } = req.params;
+  const { status } = req.body;
+  db.run('UPDATE orders SET status = ? WHERE id = ?', [status, id], function(err) {
+    if (err) return res.status(500).json({ error: err.message });
+    res.json({ success: true });
+  });
+});
 
-  const token = parts[1];
-
-  try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.admin = decoded;
-    next();
-  } catch (err) {
-    return res.status(403).json({ error: 'Invalid or expired token' });
-  }
-}
-
-module.exports = jwtAuth;
+module.exports = router;
