@@ -1,37 +1,28 @@
 const express = require('express');
 const db = require('../db');
-const auth = require('../middleware/auth');
+const jwtAuth = require('../middleware/JwtAuth'); // ✅ FIX CASE
 
 const router = express.Router();
-const jwtAuth = require('../middleware/jwtAuth');
 
+// GET all orders
 router.get('/orders', jwtAuth, (req, res) => {
-  db.all(`SELECT * FROM orders ORDER BY created_at DESC`, [], (err, rows) => {
+  db.all('SELECT * FROM orders', [], (err, rows) => {
+    if (err) return res.status(500).json({ error: err.message });
     res.json(rows);
   });
 });
 
+// UPDATE order status
 router.put('/orders/:id', jwtAuth, (req, res) => {
-  db.run(
-    `UPDATE orders SET status = ? WHERE id = ?`,
-    [req.body.status, req.params.id],
-    function () {
-      res.json({ updated: this.changes });
-    }
-  );
-});
-router.get('/orders', auth, (req, res) => {
-  db.all(`SELECT * FROM orders ORDER BY created_at DESC`, [], (err, rows) => {
-    res.json(rows);
-  });
-});
+  const { status } = req.body;
+  const { id } = req.params;
 
-router.put('/orders/:id', auth, (req, res) => {
   db.run(
-    `UPDATE orders SET status = ? WHERE id = ?`,
-    [req.body.status, req.params.id],
-    function () {
-      res.json({ updated: this.changes });
+    'UPDATE orders SET status = ? WHERE id = ?',
+    [status, id],
+    function (err) {
+      if (err) return res.status(500).json({ error: err.message });
+      res.json({ success: true });
     }
   );
 });
