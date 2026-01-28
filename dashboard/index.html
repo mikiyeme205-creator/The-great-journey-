@@ -6,41 +6,47 @@
 
   <title>🍞 Bread Admin Dashboard</title>
 
-  <!-- PWA -->
-  <link rel="manifest" href="/manifest.json">
+  <!-- PWA manifest -->
+  <link rel="manifest" href="./manifest.json" />
 
   <!-- Styles -->
-  <link rel="stylesheet" href="/style.css" />
+  <link rel="stylesheet" href="./style.css" />
 
 </head>
 <body>
 
-  <h2>🍞 የዳቦ ትዕዛዞች</h2>
+  <header>
+    <h1>🍞 የዳቦ ትዕዛዞች አስተዳደር</h1>
+  </header>
 
-  <table>
-    <thead>
-      <tr>
-        <th>ስልክ</th>
-        <th>መጠን</th>
-        <th>ዋጋ</th>
-        <th>ክፍያ</th>
-        <th>ሁኔታ</th>
-        <th>እርምጃ</th>
-      </tr>
-    </thead>
-    <tbody id="orders"></tbody>
-  </table>
+  <main>
+    <table>
+      <thead>
+        <tr>
+          <th>ስልክ</th>
+          <th>መጠን</th>
+          <th>ዋጋ</th>
+          <th>ክፍያ</th>
+          <th>ሁኔታ</th>
+          <th>እርምጃ</th>
+        </tr>
+      </thead>
+      <tbody id="orders">
+        <tr><td colspan="6">Loading orders...</td></tr>
+      </tbody>
+    </table>
+  </main>
 
   <!-- App logic -->
-  <script src="/app.js"></script>
+  <script src="./app.js"></script>
 
-  <!-- Service Worker -->
+  <!-- Service Worker registration -->
   <script>
-    if ("serviceWorker" in navigator) {
-      window.addEventListener("load", () => {
-        navigator.serviceWorker.register("/service-worker.js")
-          .then(reg => console.log("✅ Service Worker registered"))
-          .catch(err => console.error("❌ SW registration failed", err));
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./service-worker.js')
+          .then(reg => console.log('✅ Service Worker registered:', reg))
+          .catch(err => console.error('❌ SW registration failed:', err));
       });
     }
   </script>
